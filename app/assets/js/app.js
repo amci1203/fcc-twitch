@@ -1,16 +1,27 @@
-import $ from 'jquery';
+(function () {
+    const API_KEY = "c8de0e1057e67ef993b4ea7f052d7919";
 
-import Injector          from './modules/Injector';
+    console.log("...running");
 
-import MobileMenu         from './modules/MobileMenu';
-import ScrollSpy          from './modules/ScrollSpy';
-import StickyHeader       from './modules/StickyHeader';
-import FullScreenSection  from './modules/FullScreenSection';
+    navigator.geolocation.getCurrentPosition(d => {
+        const
+            url = `http://api.openweathermap.org/data/2.5/weather?lat=${d.coords.latitude}&lon=${d.coords.longitude}&id=524901&APPID=${API_KEY}`,
+            xhr = new XMLHttpRequest();
 
-function init () {
-    MobileMenu();
-    ScrollSpy();
-    StickyHeader(true);
-}
+        xhr.open("GET", url);
+        xhr.send(null)
+        xhr.onreadystatechange = () => {
+            const done = 4, ok = 200;
+            let data;
+            if (xhr.readyState === done) {
+                if (xhr.status === ok) {
+                    data = JSON.parse(xhr.responseText);
+                } else {
+                    console.log("Error: " + xhr.status);
+                }
+            }
 
-$(document).ready(Injector.bind(window, init))
+            console.log(data);
+        }
+    });
+})()

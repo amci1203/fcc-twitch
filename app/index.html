@@ -14,15 +14,19 @@
     <!--  endbuild -->
     <div id='initial' class="wrapper generic-content">
         <div class="text-center">
-            <h1 class="section-title">My Scaffold</h1>
-            <p>Created By: <strong>Allen McIntosh II</strong></p>
+            <h1 class="section-title">Local Weather</h1>
             <br />
-            <p class='text-lg'>Let's get building, shall we?</p>
+            <div id="info">
+                <h2 id='city' class="section-title sub-heading"></h2>
+                <p id='temperature'><span id='units'></span>&deg;<span id='measurement'></span></p>
+                <button id="toggle-measurement"></button>
+                <img src="" alt="" id="icon">
+            </div>
         </div>
     </div>
 
     <!--  build:js assets/js/app.js -->
-<!--    <script src='temp/js/app.js'></script>-->
+    <script src='temp/js/app.js'></script>
     <!--      endbuild -->
 </body>
 </html>
