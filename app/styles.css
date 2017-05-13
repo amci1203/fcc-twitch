@@ -18,12 +18,34 @@ body {
             transform: translateY(-50%);
 }
 
-#timer-container { width: 20rem; height: 20rem; border-radius: 10rem; border: 5px solid #FFF; margin-top: 40px; margin: 0 auto }
+#timer-container { position: relative; width: 20rem; height: 20rem; border-radius: 10rem; border: 5px solid #FFF; margin-top: 40px; margin: 0 auto }
 
-#timer-container.on-break { color: #4169e1; background: #FFF }
+#timer-container.on-break { color: #4169e1; background: #FFF; }
 
-#toggle-play .pause-bar-seperator { width: 5px; heigth: }
+#timer-container.on-break #toggle-play { background: #4169e1; }
 
-#toggle-play.play { height: 0; width: 0; border-color: transparent; border-left-color: #FFF; }
+#timer-container.on-break #toggle-play .pause-bar-seperator { background: #FFF }
+
+#timer-container.on-break #toggle-play.play { border-left-color: #4169e1 }
+
+#toggle-play {
+    position: absolute;
+    bottom: 4.15rem;
+    left: 50%;
+    -webkit-transform: translateX(-50%);
+            transform: translateX(-50%);
+
+    margin: 0;
+    padding: 0
+
+}
+
+#toggle-play.pause { height: 2rem; width: 1rem; background: #FFF; }
+
+#toggle-play.pause .pause-bar-seperator { width: 5px; height: 100% }
+
+#toggle-play:focus { outline: none !important }
+
+#toggle-play.play { height: 0; width: 0; background: transparent !important; border-width: 1rem 0 1rem  1.5rem; border-color: transparent; border-left-color: #FFF; }
 
 #toggle-play.play .pause-bar-seperator { display: none }

@@ -49,6 +49,8 @@
 	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 	(function Pomodoro(pomo) {
+	    var _arguments = arguments;
+
 
 	    if (!pomo) return false;
 
@@ -72,7 +74,9 @@
 	        return elm.classList.contains(str);
 	    },
 	        toggleClass = function toggleClass(elm, str) {
-	        return elm.classList.toggle(str);
+	        return [].concat(Array.prototype.slice.call(_arguments)).splice(1).forEach(function (cls) {
+	            return elm.classList.toggle(cls);
+	        });
 	    },
 	        click = function click(elm, fn) {
 	        return elm.addEventListener('click', fn);
@@ -84,6 +88,7 @@
 	    },
 	        toggle = get('toggle-play'),
 	        timer = get('timer'),
+	        timerC = get('timer-container'),
 	        timerM = get('timer-minutes'),
 	        timerS = get('timer-seconds'),
 	        sessionSpan = get('session-length'),
@@ -92,6 +97,7 @@
 	        alarm = get('alarm'),
 	        second = 1000,
 	        minute = second * 60,
+	        breakClass = 'on-break',
 	        startTimer = function startTimer() {
 	        start = setInterval(tick, second);
 	        disableIncrementControls();
@@ -100,7 +106,7 @@
 	        return clearInterval(start);
 	    },
 	        resetTimer = function resetTimer() {
-	        return left = inSeconds(hasClass(timer, 'on-break') ? breakLen : sessionLen);
+	        return left = inSeconds(hasClass(timerC, breakClass) ? breakLen : sessionLen);
 	    },
 	        stopTimer = function stopTimer() {
 	        if (start) clearInterval(start);
@@ -109,7 +115,7 @@
 	    },
 	        toggleTimer = function toggleTimer() {
 	        hasClass(toggle, 'play') ? startTimer() : pauseTimer();
-	        toggleClass(toggle, 'play');
+	        toggleClass(toggle, 'play', 'pause');
 	    },
 	        disableIncrementControls = function disableIncrementControls() {
 	        return increments.forEach(function (elm) {
@@ -134,7 +140,7 @@
 	        text(timerM, String(Math.floor(left / 60)).padLeft(2, 0));
 	        text(timerS, String(left % 60).padLeft(2, 0));
 
-	        !left && toggleClass(timer, 'break') && ring() && resetTimer();
+	        !left && toggleClass(timerC, breakClass) && ring() && resetTimer();
 	    }
 
 	    function incrementTimerLength() {

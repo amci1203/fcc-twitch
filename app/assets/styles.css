@@ -12,6 +12,7 @@ body {
 
 #timer {
     &-container {
+        position: relative;
         width: $pomoS;
         height: $pomoS;
         border-radius: calc($pomoS / 2);
@@ -22,6 +23,12 @@ body {
         &.on-break {
             color      : $bg;
             background : $fg;
+
+            #toggle-play {
+                background: $bg;
+                &.play { border-left-color: $bg }
+                .pause-bar-seperator { background: $fg }
+            }
         }
     }
 
@@ -36,17 +43,38 @@ body {
 }
 
 #toggle-play {
+    position: absolute;
+    bottom: 4.15rem;
+    left: 50%;
+    transform: translateX(-50%);
+
+    margin: 0;
+    padding: 0;
+    &.pause {
+        .pause-bar-seperator {
+            width: 5px;
+            height: 100%;
+        }
+
+        height: 2rem;
+        width: 1rem;
+        background: $fg;
+    }
+
+
+    &:focus { outline: none !important }
+
     &.play {
         .pause-bar-seperator { display: none }
 
         height: 0;
         width: 0;
+        background: transparent !important;
+        border-width: 1rem 0 1rem  1.5rem;
         border-color: transparent;
         border-left-color: $fg;
+
+
     }
 
-    .pause-bar-seperator {
-        width: 5px;
-        heigth:
-    }
 }

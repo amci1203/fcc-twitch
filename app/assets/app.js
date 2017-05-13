@@ -11,12 +11,13 @@
         inSeconds    = (n, isInMs) => isInMs ? n / 1000 : n * 60,
         text         = (elm, str) => elm.innerText = str,
         hasClass     = (elm, str) => elm.classList.contains(str),
-        toggleClass  = (elm, str) => elm.classList.toggle(str),
+        toggleClass  = (elm, str) => [...arguments].splice(1).forEach(cls => elm.classList.toggle(cls)),
         click        = (elm, fn)  => elm.addEventListener('click', fn),
         clickEach    = (list, fn) => list.forEach(elm => click(elm, fn)),
 
         toggle = get('toggle-play'),
         timer  = get('timer'),
+        timerC = get('timer-container'),
         timerM = get('timer-minutes'),
         timerS = get('timer-seconds'),
 
@@ -29,6 +30,8 @@
         second = 1000,
         minute = second * 60,
 
+        breakClass = 'on-break',
+
         startTimer  = () => {
             start = setInterval(tick, second);
             disableIncrementControls();
@@ -36,7 +39,7 @@
 
         pauseTimer  = () => clearInterval(start),
 
-        resetTimer  = () => left = inSeconds(hasClass(timer, 'on-break') ? breakLen : sessionLen ),
+        resetTimer  = () => left = inSeconds(hasClass(timerC, breakClass) ? breakLen : sessionLen ),
 
         stopTimer   = () => {
             if (start) clearInterval(start);
@@ -46,7 +49,7 @@
 
         toggleTimer = () => {
             hasClass(toggle, 'play') ? startTimer() : pauseTimer();
-            toggleClass(toggle, 'play');
+            toggleClass(toggle, 'play', 'pause');
         },
 
         disableIncrementControls = () => increments.forEach(elm => elm.setAttribute('disbabled', 'disabled')),
@@ -66,7 +69,7 @@
         text(timerM, String(Math.floor(left / 60)).padLeft(2,0));
         text(timerS, String(left % 60).padLeft(2,0));
 
-        !left && toggleClass(timer, 'break') && ring() && resetTimer()
+        !left && toggleClass(timerC, breakClass) && ring() && resetTimer()
     }
 
     function incrementTimerLength () {
