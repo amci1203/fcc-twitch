@@ -1,10 +1,9 @@
 module.exports = {
     entry: {
-        app    : './app/assets/js/app.js',
-        vendor : './app/assets/js/vendor.js'
+        app    : './app/assets/app.js',
     },
     output: {
-        path     : './app/temp/js',
+        path     : './app',
         filename : '[name].js',
     },
     module: {
