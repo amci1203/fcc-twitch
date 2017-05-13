@@ -3,30 +3,37 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>My Skeleton</title>
-    <meta name="theme-color" content="#777" />
+    <meta name="theme-color" content="#500bce" />
     <!--  build:css assets/css/styles.css  -->
     <link rel='stylesheet' href='styles.css' type='text/css' />
     <!--  endbuild  -->
 </head>
 <body>
-    <!--  build:js assets/js/vendor.js -->
-<!--    <script src='temp/js/vendor.js'></script>-->
-    <!--  endbuild -->
-    <div id='initial' class="wrapper generic-content">
-        <div class="text-center">
-            <h1 class="section-title">Local Weather</h1>
-            <br />
-            <div id="info">
-                <h2 id='city' class="section-title sub-heading"></h2>
-                <p id='temperature'><span id='units'></span>&deg;<span id='measurement'></span></p>
-                <button id="toggle-measurement"></button>
-                <img src="" alt="" id="icon">
-            </div>
-        </div>
-    </div>
 
+    <main id="pomodoro">
+        <section id="incrementers">
+            <div id='inc:session' class="inc-group">
+                <button class="increment increment-up"></button>
+                <span id="session-length"></span>
+                <button class="increment increment-down"></button>
+            </div>
+            <div id='inc:break' class="inc-group">
+                <button class="increment increment-up"></button>
+                <span id="break-length"></span>
+                <button class="increment increment-down"></button>
+            </div>
+        </section>
+        <section id="timer-container">
+            <p id='timer'><span id='timer-minutes'></span>:<span id='timer-seconds'></span></p>
+            <button id="toggle-play" class='play'>
+                <span class="pause-bar-seperator"></span>
+            </button>
+        </section>
+    </main>
+
+    <audio id='alarm'><source src='smoke-alarm.mp3' type='audio/mpeg'/></audio>
     <!--  build:js assets/js/app.js -->
-    <script src='temp/js/app.js'></script>
+    <script src='app.js'></script>
     <!--      endbuild -->
 </body>
 </html>

@@ -1,14 +1,14 @@
 const
     gulp         = require('gulp'),
     postCSS      = require('gulp-postcss'),
-      
+
     preCSS       = require('precss'),
     autoprefixer = require('autoprefixer'),
     math         = require('postcss-calc');
 
 gulp.task('css', function () {
     console.log('---> Filtering CSS file...');
-    return gulp.src('./app/assets/css/styles.css')
+    return gulp.src('./app/assets/styles.css')
         .pipe(postCSS([
             preCSS,
             math,

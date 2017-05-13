@@ -22,13 +22,13 @@ gulp.task('watch', ['scripts', 'css'], function () {
             baseDir: 'app'
         }
     });
-    watch('./app/assets/css/**/*.css', function () {
+    watch('./app/assets/styles.css', function () {
         gulp.start('cssInject');
     });
-    watch('./app/assets/js/**/*.js', function () {
+    watch('./app/assets/app.js', function () {
         gulp.start('scriptsRefresh');
     })
-    watch('./app/**/*.html', function () {
+    watch('./app/index.html', function () {
         browserSync.reload();
     });
 });
