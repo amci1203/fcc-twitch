@@ -60,7 +60,9 @@
 	        byClass = function byClass(elm, _class) {
 	        return elm.querySelectorAll('.' + _class);
 	    },
-	        inSeconds = function inSeconds(n, isInMs) {
+
+	    // takes either a number in ms to reduce to minutes or a whole number (in minutes) to multiply to seconds
+	    inSeconds = function inSeconds(n, isInMs) {
 	        return isInMs ? n / 1000 : n * 60;
 	    },
 	        text = function text(elm, str) {
@@ -87,28 +89,43 @@
 	        sessionSpan = get('session-length'),
 	        breakSpan = get('break-length'),
 	        increments = byClass(pomo, 'increment'),
+	        alarm = get('alarm'),
 	        second = 1000,
 	        minute = second * 60,
 	        startTimer = function startTimer() {
-	        return start = setInterval(tick, second);
+	        start = setInterval(tick, second);
+	        disableIncrementControls();
 	    },
 	        pauseTimer = function pauseTimer() {
 	        return clearInterval(start);
 	    },
 	        resetTimer = function resetTimer() {
-	        return left = inSeconds(inMinutes(hasClass(timer, 'on-break') ? breakLen : sessionLen));
+	        return left = inSeconds(hasClass(timer, 'on-break') ? breakLen : sessionLen);
 	    },
 	        stopTimer = function stopTimer() {
 	        if (start) clearInterval(start);
-	        left = inSeconds(sessionLen);
+	        resetTimer();
 	        activateIncrementControls();
 	    },
 	        toggleTimer = function toggleTimer() {
 	        hasClass(toggle, 'play') ? startTimer() : pauseTimer();
 	        toggleClass(toggle, 'play');
+	    },
+	        disableIncrementControls = function disableIncrementControls() {
+	        return increments.forEach(function (elm) {
+	            return elm.setAttribute('disbabled', 'disabled');
+	        });
+	    },
+	        activatedisableIncrementControls = function activatedisableIncrementControls() {
+	        return increments.forEach(function (elm) {
+	            return elm.removeAttribute('disabled');
+	        });
+	    },
+	        ring = function ring() {
+	        return alarm.play();
 	    };
 	    var start = void 0,
-	        sessionLen = 25,
+	        sessionLen = 0.1,
 	        breakLen = 5,
 	        left = inSeconds(sessionLen);
 
@@ -143,8 +160,8 @@
 	        text(sessionSpan, sessionLen);
 	        text(breakSpan, breakLen);
 
-	        text(timerM, sessionLen);
-	        text(timerS, '00');
+	        left++;
+	        tick();
 	    }();
 	})(document.getElementById('pomodoro'));
 

@@ -7,6 +7,7 @@
     const
         get          = id => document.getElementById(id),
         byClass      = (elm, _class) => elm.querySelectorAll(`.${_class}`),
+        // takes either a number in ms to reduce to minutes or a whole number (in minutes) to multiply to seconds
         inSeconds    = (n, isInMs) => isInMs ? n / 1000 : n * 60,
         text         = (elm, str) => elm.innerText = str,
         hasClass     = (elm, str) => elm.classList.contains(str),
@@ -23,26 +24,39 @@
         breakSpan   = get('break-length'),
 
         increments = byClass(pomo, 'increment'),
+        alarm = get('alarm'),
 
         second = 1000,
         minute = second * 60,
 
-        startTimer  = () => start = setInterval(tick, second),
+        startTimer  = () => {
+            start = setInterval(tick, second);
+            disableIncrementControls();
+        },
+
         pauseTimer  = () => clearInterval(start),
-        resetTimer  = () => left = inSeconds( inMinutes(hasClass(timer, 'on-break') ? breakLen : sessionLen )),
+
+        resetTimer  = () => left = inSeconds(hasClass(timer, 'on-break') ? breakLen : sessionLen ),
+
         stopTimer   = () => {
             if (start) clearInterval(start);
-            left = inSeconds(sessionLen);
+            resetTimer();
             activateIncrementControls();
         },
+
         toggleTimer = () => {
             hasClass(toggle, 'play') ? startTimer() : pauseTimer();
             toggleClass(toggle, 'play');
-        };
+        },
+
+        disableIncrementControls = () => increments.forEach(elm => elm.setAttribute('disbabled', 'disabled')),
+        activatedisableIncrementControls = () => increments.forEach(elm => elm.removeAttribute('disabled')),
+
+        ring = () => alarm.play();
     let
         start,
 
-        sessionLen = 25,
+        sessionLen = 0.1,
         breakLen   = 5,
 
         left = inSeconds(sessionLen);
@@ -79,8 +93,8 @@
         text(sessionSpan, sessionLen);
         text(breakSpan, breakLen);
 
-        text(timerM, sessionLen);
-        text(timerS, '00')
+        left++;
+        tick();
     })()
 
 })(document.getElementById('pomodoro'))
