@@ -2,36 +2,26 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>My Skeleton</title>
-    <meta name="theme-color" content="#500bce" />
+    <title>Weather Viewer</title>
+    <meta name="theme-color" content="#777" />
     <!--  build:css assets/css/styles.css  -->
     <link rel='stylesheet' href='styles.css' type='text/css' />
     <!--  endbuild  -->
 </head>
 <body>
-
-    <main id="pomodoro">
-        <section id="incrementers">
-            <div id='inc:session' class="inc-group">
-                <button class="increment increment-up"></button>
-                <span id="session-length"></span>
-                <button class="increment increment-down"></button>
-            </div>
-            <div id='inc:break' class="inc-group">
-                <button class="increment increment-up"></button>
-                <span id="break-length"></span>
-                <button class="increment increment-down"></button>
-            </div>
-        </section>
-        <section id="timer-container">
-            <p id='timer'><span id='timer-minutes'></span>:<span id='timer-seconds'></span></p>
-            <button id="toggle-play" class='play'>
-                <span class="pause-bar-seperator"></span>
-            </button>
-        </section>
+    <!--  build:js assets/js/vendor.js -->
+<!--    <script src='temp/js/vendor.js'></script>-->
+    <!--  endbuild -->
+    <main class="wrapper generic-content">
+        <h1 class="section-title">Local Weather</h1>
+        <div id="info">
+            <h2 id='city' class="section-title sub-heading"></h2>
+            <p id='temperature'><span id='value'></span>&deg;<span id='units'></span></p>
+            <button id="toggle"></button>
+            <img id='icon' src="" alt="" id="icon">
+        </div>
     </main>
 
-    <audio id='alarm'><source src='smoke-alarm.mp3' type='audio/mpeg'/></audio>
     <!--  build:js assets/js/app.js -->
     <script src='app.js'></script>
     <!--      endbuild -->

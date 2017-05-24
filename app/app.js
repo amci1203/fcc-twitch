@@ -46,146 +46,62 @@
 
 	'use strict';
 
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+	// NOTE: NOT THE FIRST FUNCTION TO RUN: go to getWeatherData
+	function init(data) {
 
-	(function Pomodoro(pomo) {
-	    var _arguments = arguments;
-
-
-	    if (!pomo) return false;
-
-	    getStringPrototypes();
-
-	    var get = function get(id) {
+	    var dp = function dp(dps, n) {
+	        return Math.round(n * Math.pow(10, dps)) / Math.pow(10, dps);
+	    },
+	        _1dp = dp.bind(null, 1),
+	        toCelsius = function toCelsius(F) {
+	        return _1dp((F - 32) / 1.8);
+	    },
+	        toFarenheit = function toFarenheit(C) {
+	        return _1dp(C * 1.8 + 32);
+	    },
+	        get = function get(id) {
 	        return document.getElementById(id);
 	    },
-	        byClass = function byClass(elm, _class) {
-	        return elm.querySelectorAll('.' + _class);
-	    },
-
-	    // takes either a number in ms to reduce to minutes or a whole number (in minutes) to multiply to seconds
-	    inSeconds = function inSeconds(n, isInMs) {
-	        return isInMs ? n / 1000 : n * 60;
-	    },
 	        text = function text(elm, str) {
-	        return elm.innerText = str;
+	        return elm.innerText(str);
 	    },
-	        hasClass = function hasClass(elm, str) {
-	        return elm.classList.contains(str);
+	        set = function set(elm, attr, val) {
+	        return elm.setAttribute(attr, val);
 	    },
-	        toggleClass = function toggleClass(elm, str) {
-	        return [].concat(Array.prototype.slice.call(_arguments)).splice(1).forEach(function (cls) {
-	            return elm.classList.toggle(cls);
-	        });
-	    },
-	        click = function click(elm, fn) {
-	        return elm.addEventListener('click', fn);
-	    },
-	        clickEach = function clickEach(list, fn) {
-	        return list.forEach(function (elm) {
-	            return click(elm, fn);
-	        });
-	    },
-	        toggle = get('toggle-play'),
-	        timer = get('timer'),
-	        timerC = get('timer-container'),
-	        timerM = get('timer-minutes'),
-	        timerS = get('timer-seconds'),
-	        sessionSpan = get('session-length'),
-	        breakSpan = get('break-length'),
-	        increments = byClass(pomo, 'increment'),
-	        alarm = get('alarm'),
-	        second = 1000,
-	        minute = second * 60,
-	        breakClass = 'on-break',
-	        startTimer = function startTimer() {
-	        start = setInterval(tick, second);
-	        disableIncrementControls();
-	    },
-	        pauseTimer = function pauseTimer() {
-	        return clearInterval(start);
-	    },
-	        resetTimer = function resetTimer() {
-	        return left = inSeconds(hasClass(timerC, breakClass) ? breakLen : sessionLen);
-	    },
-	        stopTimer = function stopTimer() {
-	        if (start) clearInterval(start);
-	        resetTimer();
-	        activateIncrementControls();
-	    },
-	        toggleTimer = function toggleTimer() {
-	        hasClass(toggle, 'play') ? startTimer() : pauseTimer();
-	        toggleClass(toggle, 'play', 'pause');
-	    },
-	        disableIncrementControls = function disableIncrementControls() {
-	        return increments.forEach(function (elm) {
-	            return elm.setAttribute('disbabled', 'disabled');
-	        });
-	    },
-	        activatedisableIncrementControls = function activatedisableIncrementControls() {
-	        return increments.forEach(function (elm) {
-	            return elm.removeAttribute('disabled');
-	        });
-	    },
-	        ring = function ring() {
-	        return alarm.play();
+	        city = get('city'),
+	        icon = get('icon'),
+	        units = get('units'),
+	        value = get('value'),
+	        toggle = get('toggle');
+
+	    console.log(data);
+	}
+
+	// getting the data before we start anything
+	(function getWeatherData() {
+	    var _this = this;
+
+	    var API_KEY = "c8de0e1057e67ef993b4ea7f052d7919";
+
+	    navigator.geolocation.getCurrentPosition(function (d) {
+	        var url = 'http://api.openweathermap.org/data/2.5/weather?' + ('lat=' + d.coords.latitude + '&') + ('lon=' + d.coords.longitude + '&') + ('id=524901&APPID=' + API_KEY)
+	        //                'units=metric&'
+
+	        ,
+	            xhr = new XMLHttpRequest();
+
+	        xhr.open("GET", url);
+	        xhr.send(null);
+	        xhr.onreadystatechange = isOk.bind(_this, xhr, init);
+	    });
+	})();
+
+	function isOk(xhr, callback) {
+	    var done = 4,
+	        ok = function ok(stat) {
+	        return stat >= 200 && stat < 300;
 	    };
-	    var start = void 0,
-	        sessionLen = 0.1,
-	        breakLen = 5,
-	        left = inSeconds(sessionLen);
-
-	    function tick() {
-	        left--;
-	        text(timerM, String(Math.floor(left / 60)).padLeft(2, 0));
-	        text(timerS, String(left % 60).padLeft(2, 0));
-
-	        !left && toggleClass(timerC, breakClass) && ring() && resetTimer();
-	    }
-
-	    function incrementTimerLength() {
-	        var controls = this.parentElement.id.split(':')[1],
-	            increment = hasClass(this, 'increment-up') ? 1 : -1;
-
-	        if (controls === 'session') {
-	            sessionLen += increment;
-	            text(sessionSpan, sessionLen);
-	        }
-	        if (controls === 'break') {
-	            breakLen += increment;
-	            text(breakSpan, breakLen);
-	        }
-
-	        left = inSeconds(sessionLen);
-	    }
-
-	    return function () {
-	        click(toggle, toggleTimer);
-	        clickEach(increments, incrementTimerLength);
-
-	        text(sessionSpan, sessionLen);
-	        text(breakSpan, breakLen);
-
-	        left++;
-	        tick();
-	    }();
-	})(document.getElementById('pomodoro'));
-
-	function getStringPrototypes() {
-	    String.prototype.padLeft = function (targetLength, padString) {
-	        if (this.length >= targetLength) return this;else {
-	            if (['number', 'string'].indexOf(typeof padString === 'undefined' ? 'undefined' : _typeof(padString)) !== -1) {
-	                var pad = String(padString);
-	                var target = this.split('*');
-	                while (target.length < targetLength) {
-	                    target.unshift(pad);
-	                }
-	                return target.join('');
-	            } else {
-	                throw new Error('Err: padString is not a number or string');
-	            }
-	        }
-	    };
+	    xhr.readyState === done && ok(xhr.status) ? callback(JSON.parse(xhr.responseText)) : console.log(xhr.status + ': ' + xhr.responseText);
 	}
 
 /***/ }
