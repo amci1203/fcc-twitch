@@ -18,6 +18,17 @@ body {
 }
 
 main {
+    #info {
+        &.hidden {
+            opacity: 0;
+            transform: scale(0.5);
+            transform-origin: center center;
+        }
+
+        transition: 0.3s all ease-in;
+        opacity: 1;
+        transform: scale(1);
+    }
 
     padding: 40px 20px;
 
@@ -26,16 +37,82 @@ main {
         top: 50%; left: 50%;
         transform: translate(-50%, -50%);
     }
+
+    #temperature {
+        font-size: 24px;
+        @mixin atMedium { font-size: 40px }
+    }
+    #value {
+        display: inline-block;
+        text-align: right;
+        width: 5rem;
+    }
+    #units {
+        font-family: monospace;
+        display: inline-block;
+        margin-left: 7px;
+        padding: 10px;
+        background: $fg;
+        color: $bg;
+        border-radius: 7px;
+    }
 }
 
 .section-title {
     font-weight: 300;
-    font-size: 2.4rem;
+    font-size: 3rem;
     margin-bottom: 1.2rem;
 
     @mixin atMedium {
-        font-size: 3.35rem;
+        font-size: 4.5rem;
         font-weight: 100;
-        margin-bottom: 2rem;
+        margin: 4rem auto;
     }
+
+    &.sub-heading {
+        transform: scale(0.85);
+        margin: 1rem auto;
+    }
+}
+
+.page-lock {
+    overflow: hidden;
+    &.loading .loading-circle {
+        display: block;
+        img {
+            animation-name            : spin;
+            animation-duration        : 0.85s;
+            animation-iteration-count : infinite;
+        }
+    }
+}
+
+.page-lock .page-shadow {
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: color(black a(0.7));
+}
+
+.loading-circle {
+    position: fixed;
+    display: none;
+    width: 10rem;
+    height: 10rem;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transform-origin: center center;
+    img {
+        width: 100%;
+        height: 100%;
+    }
+}
+
+@keyframes spin {
+    from { transform-origin: center center; transform: rotate(0deg)   }
+    to   { transform-origin: center center; transform: rotate(360deg) }
 }

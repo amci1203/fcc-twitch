@@ -1,26 +1,30 @@
 <!DOCTYPE html>
-<html>
+<html class='page-lock loading'>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Weather Viewer</title>
-    <meta name="theme-color" content="#777" />
+    <meta name="theme-color" content="#777777" />
     <!--  build:css assets/css/styles.css  -->
     <link rel='stylesheet' href='styles.css' type='text/css' />
     <!--  endbuild  -->
 </head>
 <body>
-    <!--  build:js assets/js/vendor.js -->
-<!--    <script src='temp/js/vendor.js'></script>-->
-    <!--  endbuild -->
+
+    <h1 class="section-title">Local Weather</h1>
     <main class="wrapper generic-content">
-        <h1 class="section-title">Local Weather</h1>
-        <div id="info">
+        <div id='info' class='hidden'>
             <h2 id='city' class="section-title sub-heading"></h2>
             <p id='temperature'><span id='value'></span>&deg;<span id='units'></span></p>
-            <button id="toggle"></button>
+            <p id="description"></p>
             <img id='icon' src="" alt="" id="icon">
         </div>
     </main>
+
+    <div id="loading-shadow" class='page-shadow'>
+        <div class="loading-circle">
+            <img src="assets/img/loading.svg" alt="" />
+        </div>
+    </div>
 
     <!--  build:js assets/js/app.js -->
     <script src='app.js'></script>

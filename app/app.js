@@ -46,53 +46,65 @@
 
 	'use strict';
 
-	// NOTE: NOT THE FIRST FUNCTION TO RUN: go to getWeatherData
-	function init(data) {
+	var dp = function dp(dps, n) {
+	    return Math.round(n * Math.pow(10, dps)) / Math.pow(10, dps);
+	},
+	    _1dp = dp.bind(null, 1),
+	    toCelsius = function toCelsius(F) {
+	    return _1dp((F - 32) / 1.8);
+	},
+	    toFarenheit = function toFarenheit(C) {
+	    return _1dp(C * 1.8 + 32);
+	},
+	    get = function get(id) {
+	    return document.getElementById(id);
+	},
+	    text = function text(elm, str) {
+	    return str ? elm.innerText = str : elm.innerText;
+	},
+	    set = function set(elm, attr, val) {
+	    return elm.setAttribute(attr, val);
+	},
+	    main = get('info'),
+	    city = get('city'),
+	    icon = get('icon'),
+	    units = get('units'),
+	    value = get('value'),
+	    desc = get('description'),
+	    defaultUnit = 'C';
 
-	    var dp = function dp(dps, n) {
-	        return Math.round(n * Math.pow(10, dps)) / Math.pow(10, dps);
-	    },
-	        _1dp = dp.bind(null, 1),
-	        toCelsius = function toCelsius(F) {
-	        return _1dp((F - 32) / 1.8);
-	    },
-	        toFarenheit = function toFarenheit(C) {
-	        return _1dp(C * 1.8 + 32);
-	    },
-	        get = function get(id) {
-	        return document.getElementById(id);
-	    },
-	        text = function text(elm, str) {
-	        return elm.innerText(str);
-	    },
-	        set = function set(elm, attr, val) {
-	        return elm.setAttribute(attr, val);
-	    },
-	        city = get('city'),
-	        icon = get('icon'),
-	        units = get('units'),
-	        value = get('value'),
-	        toggle = get('toggle');
+	function init(data) {
+	    // DONE LOADING
+	    document.documentElement.classList.remove('page-lock', 'loading');
+	    main.classList.remove('hidden');
 
 	    console.log(data);
+
+	    text(city, data.name);
+	    text(value, data.main.temp - 273.15);
+	    text(desc, data.weather[0].description);
+
+	    // EVENTS //
+
+	    units.addEventListener('click', toggleUnits);
 	}
+
+	text(units, defaultUnit);
 
 	// getting the data before we start anything
 	(function getWeatherData() {
-	    var _this = this;
 
 	    var API_KEY = "c8de0e1057e67ef993b4ea7f052d7919";
 
 	    navigator.geolocation.getCurrentPosition(function (d) {
-	        var url = 'http://api.openweathermap.org/data/2.5/weather?' + ('lat=' + d.coords.latitude + '&') + ('lon=' + d.coords.longitude + '&') + ('id=524901&APPID=' + API_KEY)
-	        //                'units=metric&'
-
-	        ,
+	        var url = 'http://api.openweathermap.org/data/2.5/weather?' + ('lat=' + d.coords.latitude + '&') + ('lon=' + d.coords.longitude + '&') + ('id=524901&APPID=' + API_KEY),
 	            xhr = new XMLHttpRequest();
 
 	        xhr.open("GET", url);
 	        xhr.send(null);
-	        xhr.onreadystatechange = isOk.bind(_this, xhr, init);
+	        xhr.onreadystatechange = function () {
+	            return isOk(xhr, init);
+	        };
 	    });
 	})();
 
@@ -101,7 +113,14 @@
 	        ok = function ok(stat) {
 	        return stat >= 200 && stat < 300;
 	    };
-	    xhr.readyState === done && ok(xhr.status) ? callback(JSON.parse(xhr.responseText)) : console.log(xhr.status + ': ' + xhr.responseText);
+	    return xhr.readyState === done && ok(xhr.status) ? callback(JSON.parse(xhr.responseText)) : false;
+	}
+
+	function toggleUnits() {
+	    var temp = text(value),
+	        isInCelsius = text(units) === 'C';
+	    text(value, isInCelsius ? toFarenheit(temp) : toCelsius(temp));
+	    text(units, isInCelsius ? 'F' : 'C');
 	}
 
 /***/ }
