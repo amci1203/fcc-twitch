@@ -42,7 +42,7 @@
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	'use strict';
 
@@ -50,12 +50,6 @@
 	    return Math.round(n * Math.pow(10, dps)) / Math.pow(10, dps);
 	},
 	    _1dp = dp.bind(null, 1),
-	    toCelsius = function toCelsius(F) {
-	    return _1dp((F - 32) / 1.8);
-	},
-	    toFarenheit = function toFarenheit(C) {
-	    return _1dp(C * 1.8 + 32);
-	},
 	    get = function get(id) {
 	    return document.getElementById(id);
 	},
@@ -67,11 +61,18 @@
 	},
 	    main = get('info'),
 	    city = get('city'),
-	    icon = get('icon'),
+	    icons = get('icons'),
 	    units = get('units'),
 	    value = get('value'),
 	    desc = get('description'),
-	    defaultUnit = 'C';
+	    defaultUnit = 'C',
+	    temperature = {};
+
+	String.prototype.capitalizeWords = function () {
+	    return this.split(' ').map(function (word) {
+	        return word.charAt(0).toUpperCase() + word.substring(1);
+	    }).join(' ');
+	};
 
 	function init(data) {
 	    // DONE LOADING
@@ -80,13 +81,20 @@
 
 	    console.log(data);
 
-	    text(city, data.name);
-	    text(value, data.main.temp - 273.15);
-	    text(desc, data.weather[0].description);
+	    Object.assign(temperature, {
+	        C: _1dp(data.main.temp - 273.15),
+	        F: _1dp((data.main.temp - 273.15) * 1.8 + 32)
+	    });
+
+	    text(city, data.name + ', ' + data.sys.country);
+	    text(value, temperature.C);
+	    text(desc, data.weather[0].description.capitalizeWords());
+
+	    showIcon(data.weather[0].main.toLowerCase()
 
 	    // EVENTS //
 
-	    units.addEventListener('click', toggleUnits);
+	    );units.addEventListener('click', toggleUnits);
 	}
 
 	text(units, defaultUnit);
@@ -119,9 +127,25 @@
 	function toggleUnits() {
 	    var temp = text(value),
 	        isInCelsius = text(units) === 'C';
-	    text(value, isInCelsius ? toFarenheit(temp) : toCelsius(temp));
+	    text(value, isInCelsius ? temperature.F : temperature.C);
 	    text(units, isInCelsius ? 'F' : 'C');
 	}
 
-/***/ }
+	function showIcon(cond) {
+	    switch (cond) {
+	        case 'drizzle':
+	        case 'clouds':
+	        case 'rain':
+	        case 'snow':
+	        case 'clear':
+	        case 'thunderstom':
+	            icons.querySelector('.' + cond).classList.add('active');
+	            break;
+	        default:
+	            icons.querySelector('.clouds').classList.add('active');
+
+	    }
+	}
+
+/***/ })
 /******/ ]);
