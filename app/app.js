@@ -46,11 +46,7 @@
 
 	'use strict';
 
-	var dp = function dp(dps, n) {
-	    return Math.round(n * Math.pow(10, dps)) / Math.pow(10, dps);
-	},
-	    _1dp = dp.bind(null, 1),
-	    get = function get(id) {
+	var get = function get(id) {
 	    return document.getElementById(id);
 	},
 	    text = function text(elm, str) {
@@ -59,93 +55,89 @@
 	    set = function set(elm, attr, val) {
 	    return elm.setAttribute(attr, val);
 	},
-	    main = get('info'),
-	    city = get('city'),
-	    icons = get('icons'),
-	    units = get('units'),
-	    value = get('value'),
-	    desc = get('description'),
-	    defaultUnit = 'C',
-	    temperature = {};
-
-	String.prototype.capitalizeWords = function () {
-	    return this.split(' ').map(function (word) {
-	        return word.charAt(0).toUpperCase() + word.substring(1);
-	    }).join(' ');
+	    click = function click(elm, fn) {
+	    return elm.addEventListener('click', fn);
+	},
+	    users = document.createElement('main'),
+	    api = 'https://wind-bow.gomix.me/twitch-api',
+	    getUser = function getUser(user, cb) {
+	    return jsonp(api + '/users/' + user, cb);
+	},
+	    getStream = function getStream(user, cb) {
+	    return jsonp(api + '/streams/' + user, cb);
+	},
+	    usernames = ["ESL_SC2", "OgamingSC2", "cretetion", "freecodecamp", "storbeck", "habathcx", "RobotCaleb", "noobs2ninjas", "comster404"],
+	    placeholders = {
+	    logo: 'assets/img/twitch-logo.png',
+	    bio: '(Nothing to show here)'
 	};
 
-	function init(data) {
-	    // DONE LOADING
-	    document.documentElement.classList.remove('page-lock', 'loading');
-	    main.classList.remove('hidden');
-
-	    console.log(data);
-
-	    Object.assign(temperature, {
-	        C: _1dp(data.main.temp - 273.15),
-	        F: _1dp((data.main.temp - 273.15) * 1.8 + 32)
+	function getUsers() {
+	    usernames.forEach(function (user) {
+	        return getUser(user, pushUser);
 	    });
-
-	    text(city, data.name + ', ' + data.sys.country);
-	    text(value, temperature.C);
-	    text(desc, data.weather[0].description.capitalizeWords());
-
-	    showIcon(data.weather[0].main.toLowerCase()
-
-	    // EVENTS //
-
-	    );units.addEventListener('click', toggleUnits);
+	    document.body.appendChild(users);
 	}
 
-	text(units, defaultUnit);
-
-	// getting the data before we start anything
-	(function getWeatherData() {
-
-	    var API_KEY = "c8de0e1057e67ef993b4ea7f052d7919";
-
-	    navigator.geolocation.getCurrentPosition(function (d) {
-	        var url = 'http://api.openweathermap.org/data/2.5/weather?' + ('lat=' + d.coords.latitude + '&') + ('lon=' + d.coords.longitude + '&') + ('id=524901&APPID=' + API_KEY),
-	            xhr = new XMLHttpRequest();
-
-	        xhr.open("GET", url);
-	        xhr.send(null);
-	        xhr.onreadystatechange = function () {
-	            return isOk(xhr, init);
-	        };
+	function getStreams() {
+	    usernames.forEach(function (user) {
+	        return getStream(user, addStreamData);
 	    });
-	})();
+	}
 
-	function isOk(xhr, callback) {
-	    var done = 4,
-	        ok = function ok(stat) {
-	        return stat >= 200 && stat < 300;
+	function pushUser(user) {
+	    console.log(user);
+
+	    var card = document.createElement('a'),
+	        logo = user.logo || placeholders.logo,
+	        name = user.display_name,
+	        bio = user.bio || placeholders.bio;
+
+	    Object.assign(card, {
+	        id: user.name,
+	        href: 'https://www.twitch.tv/' + user.name,
+	        target: '_blank',
+	        innerHTML: '\n            <img src=\'' + logo + '\' />\n            <h2 class=\'section-title subtitle\'>' + name + '</h2>\n            <p>' + bio + '</p>\n        '
+	    });
+
+	    users.appendChild(card);
+	}
+
+	function addStreamData(data) {
+	    if (!data.stream) return false;
+	    console.log(data.stream);
+
+	    var stream = data.stream,
+	        card = get(stream.channel.name),
+	        span = document.createElement('span');
+
+	    span.innerHTML = 'LOOK AT ME';
+
+	    card.appendChild(span);
+	}
+
+	var jsonp = function () {
+	    var numCalls = 0;
+	    return function (target, cb) {
+	        numCalls++;
+
+	        var script = document.createElement('script'),
+	            join = (target.indexOf('?') == -1 ? '?' : '&') + 'callback=',
+	            cbStr = 'JSON_CALLBACK' + numCalls;
+
+	        script.onload = script.remove;
+	        script.src = target + join + cbStr;
+	        document.body.appendChild(script);
+	        window[cbStr] = cb;
 	    };
-	    return xhr.readyState === done && ok(xhr.status) ? callback(JSON.parse(xhr.responseText)) : false;
-	}
+	}();
 
-	function toggleUnits() {
-	    var temp = text(value),
-	        isInCelsius = text(units) === 'C';
-	    text(value, isInCelsius ? temperature.F : temperature.C);
-	    text(units, isInCelsius ? 'F' : 'C');
-	}
+	(function () {
 
-	function showIcon(cond) {
-	    switch (cond) {
-	        case 'drizzle':
-	        case 'clouds':
-	        case 'rain':
-	        case 'snow':
-	        case 'clear':
-	        case 'thunderstom':
-	            icons.querySelector('.' + cond).classList.add('active');
-	            break;
-	        default:
-	            icons.querySelector('.clouds').classList.add('active');
-
-	    }
-	}
+	    users.id = 'users';
+	    getUsers();
+	    getStreams();
+	})();
 
 /***/ })
 /******/ ]);
