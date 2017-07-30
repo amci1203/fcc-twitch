@@ -68,6 +68,7 @@
 	},
 	    usernames = ["ESL_SC2", "OgamingSC2", "cretetion", "freecodecamp", "storbeck", "habathcx", "RobotCaleb", "noobs2ninjas", "comster404"],
 	    placeholders = {
+	    name: '404',
 	    logo: 'assets/img/twitch-logo.png',
 	    bio: '(Nothing to show here)'
 	};
@@ -90,7 +91,7 @@
 
 	    var card = document.createElement('a'),
 	        logo = user.logo || placeholders.logo,
-	        name = user.display_name,
+	        name = user.display_name || placeholders.name,
 	        bio = user.bio || placeholders.bio;
 
 	    Object.assign(card, {

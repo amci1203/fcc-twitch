@@ -23,6 +23,7 @@ const
     ],
       
     placeholders = {
+        name : '404',
         logo : 'assets/img/twitch-logo.png',
         bio  : '(Nothing to show here)'
     }
@@ -42,7 +43,7 @@ function pushUser (user) {
     const
         card = document.createElement('a'),
         logo = user.logo || placeholders.logo,
-        name = user.display_name,
+        name = user.display_name || placeholders.name,
         bio  = user.bio || placeholders.bio;
     
     Object.assign(card, {
